@@ -1,0 +1,345 @@
+#VRML_SIM V7.3.0 utf8
+WorldInfo {
+  info [
+    "The model of the E-puck robot"
+    "Author: Simon Blanchoud & Olivier Michel"
+    "Date: 01 SEP 2006"
+  ]
+  title "E-puck"
+}
+Viewpoint {
+  orientation -0.47874 0.679219 0.5563 2.07012
+  position 0.30645 1.3078 0.0145639
+}
+PointLight {
+  ambientIntensity 0.5
+  intensity 0.6
+  location 0.14 0.6 -0.55
+  castShadows TRUE
+}
+PointLight {
+  ambientIntensity 0.5
+  intensity 0.6
+  location -0.43 0.6 0.5
+}
+Background {
+  skyColor [
+    0.4 0.7 1
+  ]
+}
+DEF ground Solid {
+  translation 0 -0.0001 0
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 1 1 1
+          specularColor 0.196078 0.196078 0.196078
+        }
+        texture ImageTexture {
+          url [
+            "textures/lightwood.png"
+          ]
+        }
+        textureTransform TextureTransform {
+          center 0.46 0
+          rotation -0.32
+          translation -1.01 0
+        }
+      }
+      geometry DEF ground_geo IndexedFaceSet {
+        coord Coordinate {
+          point [
+            -1 0 -1
+            -1 0 1
+            1 0 1
+            1 0 -1
+          ]
+        }
+        texCoord TextureCoordinate {
+          point [
+            0 0
+            0 5
+            5 5
+            5 0
+          ]
+        }
+        coordIndex [
+          0, 1, 2, 3, -1
+        ]
+        texCoordIndex [
+          0, 1, 2, 3, -1
+        ]
+      }
+    }
+  ]
+  boundingObject Transform {
+    translation 0 -0.01 0
+    children [
+      Box {
+        size 2 0.02 2
+      }
+    ]
+  }
+}
+DEF wall1 Solid {
+  translation 0.075 0 0.1
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 1 0.333333 0
+        }
+      }
+      geometry Box {
+        size 0.65 0.2 0.05
+      }
+    }
+  ]
+  boundingObject Box {
+    size 0.65 0.2 0.05
+  }
+  locked TRUE
+}
+DEF wall1bottom Solid {
+  translation 0.075 0 0.3
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 0 1 1
+        }
+      }
+      geometry Box {
+        size 2 0.2 0.05
+      }
+    }
+  ]
+  boundingObject Box {
+    size 2 0.2 0.05
+  }
+  locked TRUE
+}
+DEF wall1bottomextension2 Solid {
+  translation 0.115 0 0.5
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 0 1 1
+        }
+      }
+      geometry Box {
+        size 0.65 0.2 0.05
+      }
+    }
+  ]
+  boundingObject Box {
+    size 0.65 0.2 0.05
+  }
+  locked TRUE
+}
+DEF wall1extension Solid {
+  translation -0.575 0 -0.5
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 0.666667 1 0.498039
+        }
+      }
+      geometry Box {
+        size 0.65 0.2 0.05
+      }
+    }
+  ]
+  boundingObject Box {
+    size 0.65 0.2 0.05
+  }
+  locked TRUE
+}
+DEF wall1extension2 Solid {
+  translation -0.575 0 0.5
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 0.333333 0.333333 0
+        }
+      }
+      geometry Box {
+        size 0.65 0.2 0.05
+      }
+    }
+  ]
+  boundingObject Box {
+    size 0.65 0.2 0.05
+  }
+  locked TRUE
+}
+DEF wall1top Solid {
+  translation 0.525 0 -0.55
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 0.2 1 0.2
+        }
+      }
+      geometry Box {
+        size 0.65 0.2 0.05
+      }
+    }
+  ]
+  boundingObject Box {
+    size 0.65 0.2 0.05
+  }
+  locked TRUE
+}
+DEF wall1right Solid {
+  translation 0.64 0 -0.125
+  rotation 0 1 0 1.5708
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 1 0.666667 1
+        }
+      }
+      geometry Box {
+        size 1 0.2 0.05
+      }
+    }
+  ]
+  boundingObject Box {
+    size 1 0.2 0.05
+  }
+  locked TRUE
+}
+DEF wall1left Solid {
+  translation -0.425 0 0.1
+  rotation 0 1 0 1.5708
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 0.2 0.2 1
+        }
+      }
+      geometry Box {
+        size 1 0.2 0.05
+      }
+    }
+  ]
+  boundingObject Box {
+    size 1 0.2 0.05
+  }
+  locked TRUE
+}
+DEF wall1south Solid {
+  translation -0.25 0 -0.1
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 1 0.1 0.3
+        }
+      }
+      geometry Box {
+        size 1 0.2 0.05
+      }
+    }
+  ]
+  boundingObject Box {
+    size 1 0.2 0.05
+  }
+  locked TRUE
+}
+DEF wall1CentreTop Solid {
+  translation 0.425 0 -0.125
+  rotation 0 1 0 1.5708
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 1 1 0
+        }
+      }
+      geometry Box {
+        size 0.5 0.2 0.05
+      }
+    }
+  ]
+  boundingObject Box {
+    size 0.5 0.2 0.05
+  }
+  locked TRUE
+}
+DEF wall1CentreTop Solid {
+  translation 0.225 0 -0.375
+  rotation 0 1 0 1.5708
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 1 0 1
+        }
+      }
+      geometry Box {
+        size 0.5 0.2 0.05
+      }
+    }
+  ]
+  boundingObject Box {
+    size 0.5 0.2 0.05
+  }
+  locked TRUE
+}
+Solid {
+  translation 1 0.05 0
+  children [
+    DEF WALL_SHAPE Shape {
+      appearance DEF WALL_APPEARANCE Appearance {
+        material Material {
+          diffuseColor 1 0.501961 0.25098
+        }
+      }
+      geometry Box {
+        size 0.02 0.1 2
+      }
+    }
+  ]
+  boundingObject USE WALL_SHAPE
+}
+Solid {
+  translation -1 0.05 0
+  children [
+    USE WALL_SHAPE
+  ]
+  boundingObject USE WALL_SHAPE
+}
+Solid {
+  translation 0 0.05 1
+  rotation 0 1 0 1.5708
+  children [
+    USE WALL_SHAPE
+  ]
+  boundingObject USE WALL_SHAPE
+}
+Solid {
+  translation 0 0.05 -1
+  rotation 0 1 0 1.5708
+  children [
+    USE WALL_SHAPE
+  ]
+  boundingObject USE WALL_SHAPE
+}
+DEF E_PUCK EPuck_GPS {
+  translation -0.0955636 0 0.223874
+  rotation 0 1 0 -1.5708
+  controller "epuck_random"
+  camera_windowPosition 0.134541 0.827051
+  camera_fieldOfView 0.6
+  camera_pixelSize 4
+  emitter_channel 2
+}
