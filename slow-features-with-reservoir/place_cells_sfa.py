@@ -202,6 +202,8 @@ if __name__ == '__main__':
 
         #for the first 3 features
         plotter.plot_feature_comparison(title, coordm, testFeatures)
+    elif (plotterConfig == 'coverage'):
+        plotter.plot_coverage(title, coordm, testFeatures)
     elif (plotterConfig == 'replay'):
         plt.ion()
         print "graph"
