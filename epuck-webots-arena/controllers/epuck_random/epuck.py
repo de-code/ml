@@ -10,8 +10,8 @@ class EpuckFunctions (DifferentialWheels):
     axle_length = 5.3 # centimeters
     timestep_duration = 200/1000 # Real-time seconds per timestep
 
-    def basic_setup(self, tempo = 1.0):
-        self.timestep = 200
+    def basic_setup(self, timestep = 200, tempo = 1.0):
+        self.timestep = timestep
         self.tempo = tempo
         self.enableEncoders(self.timestep)
         self.camera = self.getCamera('camera')
@@ -26,7 +26,9 @@ class EpuckFunctions (DifferentialWheels):
         self.emitter = self.getEmitter("emitter");
         self.receiver = self.getReceiver("receiver");
         self.gps = self.getGPS("gps");
-        self.gps.enable(200)
+        self.gps.enable(timestep)
+        self.compass = self.getCompass("compass");
+        self.compass.enable(timestep)
         self.receiver.enable(self.timestep)
         self.receiver.setChannel(1)
         self.emitter.setChannel(2)
