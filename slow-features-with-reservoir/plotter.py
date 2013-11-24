@@ -92,3 +92,50 @@ def update_real_time_plot(trajectory, currentPos, activation):
     plt.plot(currentPos[0], currentPos[1], color+'.', markersize=20)
     plt.text(currentPos[0], currentPos[1], activation)
     plt.draw()
+    
+def plot_coverage(title, trajectory, features):
+    featureCount = features.shape[1]
+    pointCount = features.shape[0]
+    fig = plt.figure()
+    plt.title(title)
+    #plt.ion()
+    #plt.show()
+    max = np.amax(features)
+    min = np.amin(features)
+    
+    plt.plot(trajectory[:,0], trajectory[:,1], 'k')
+    
+    print "comparison max: " + str(max) + ", min: " + str(min)
+    for i in range(featureCount):
+        #plt.clf()
+        f = features[:,i]
+        
+        maxIca = 0
+        maxX = 0
+        maxY = 0
+        
+        for k in range(pointCount):
+            if(f[k] > 4.5):
+                if f[k] > maxIca:
+                    maxIca = f[k]
+                    maxX = trajectory[k,0]
+                    maxY = trajectory[k,1]
+                #plt.plot(trajectory[k,0], trajectory[k,1], 'y.', markersize=20)
+        
+        if(maxIca > 0):
+            plt.plot(maxX, maxY, 'r.', markersize=20)
+            strMax = "%10.2f" % maxIca
+            #plt.text(maxX, maxY, strMax, color='b')
+                                       
+        #ax.plot(trajectory[:,0], trajectory[:,1], 'k')
+        
+        
+        #plt.savefig('/home/ronin/Documents/Hackademia 2013/plots/ica'+str(i)+'.png')
+    
+    plt.setp( plt.gca().xaxis.get_ticklabels(), visible=False)
+    plt.setp( plt.gca().yaxis.get_ticklabels(), visible=False)
+    plt.show()
+    #raw_input()
+    return
+
+    
