@@ -53,8 +53,21 @@ class EpuckFunctions (DifferentialWheels):
 #            right = 0.9
         self.setSpeed(int(left*self.max_wheel_speed),int(right*self.max_wheel_speed))
 
+    def get_coordinates(self):
+        gps_sensors = self.gps.getValues();
+        return [gps_sensors[0], gps_sensors[2]]
+
+    def get_compass_heading_in_grad(self):
+        compass_values = self.compass.getValues();
+        # subtract math.pi/2 (90) so that the heading is 0 facing 'north' (given x going from left to right) 
+        rad = math.atan2(compass_values[0], compass_values[2]) - (math.pi / 2);
+        if (rad < -math.pi):
+            rad = rad + (2 * math.pi)
+        return rad / math.pi * 180.0
+
     def get_random_wheel(self):
         return random.choice(["L","R"])
+        
 
     def update_current_coordinates(self,d_str):
         r = re.match('(.*),(.*)',d_str)

@@ -2,7 +2,6 @@ from epuck import EpuckFunctions
 from recorder import CsvRecorder
 import behaviors
 import random
-import math
 from config import config
 
 random_alpha = 0.0
@@ -34,33 +33,17 @@ epuck_controller.step(timestep)
 current_time = 0
 
 while not behavior.done():
-    # epuck_controller.stop_moving()
-    epuck_controller.update_proximities()
     epuck_controller.step(timestep)
+    epuck_controller.update_proximities()
     current_time = current_time + timestep
     
-    # sensor data...
-    
-    # coordinates
-    gps_sensors = epuck_controller.gps.getValues();
-    coordinates = [gps_sensors[0], gps_sensors[2]]
-    
-    # compass
-    compass_values = epuck_controller.compass.getValues();
-    # subtract math.pi/2 (90) so that the heading is 0 facing 'north' (given x going from left to right) 
-    rad = math.atan2(compass_values[0], compass_values[2]) - (math.pi / 2);
-    if (rad < -math.pi):
-        rad = rad + (2 * math.pi)
-    compass_heading = rad / math.pi * 180.0
-    
+    # sensor data    
     sensorData = {
         'current_time': current_time,
         'distance_sensor_values': epuck_controller.dist_sensor_values,
-        'coordinates': coordinates,
-        'compass_heading': compass_heading,
+        'coordinates': epuck_controller.get_coordinates(),
+        'compass_heading': epuck_controller.get_compass_heading_in_grad(),
         'camera': epuck_controller.get_average_intensity_in_grids()}
-    
-    #print "compass: ", compass_values, ", compass_heading: ", compass_heading, ", rad: ", rad
 
     # calculate motor speeds
     speeds = behavior.calculate_motor_speeds(sensorData)
