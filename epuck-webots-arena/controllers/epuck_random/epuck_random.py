@@ -2,36 +2,58 @@ from epuck import EpuckFunctions
 from recorder import CsvRecorder
 import behaviors
 import random
+import datetime
+import sys
+import os
 from config import config
 
-random_alpha = 0.0
-timestep = 100
+random_alpha = config['randomness']
+time_step_size = config['time.step.size']
+time_step_count = config['time.step.count']
 max_speed = 1.0
-mode = "target"
+mode = config['mode']
+
+actual_time = datetime.datetime.now()
+
+description = "time.step.size=" + str(time_step_size) + "\ntime.step.count=" + str(time_step_count) + "\nrandomness=" + str(random_alpha) + "\nmode=" + mode 
+if (mode == "wall"):
+    behavior = behaviors.WallFollowingBehavior()
+elif (mode == "path"):
+    behavior = behaviors.TargetFollowingBehavior()
+    behavior.set_target_coordinates_list(config['targets'])
+    description = description + "\ntargets=" + str(config['targets'])
+elif (mode == "random"):
+    behavior = behaviors.RandomMovementBehavior()
+else:
+    raise Exception("invalid mode: " + str(mode))
+
+print "description=\n", description
+
+epuck_controller = EpuckFunctions()
+epuck_controller.basic_setup(time_step_size)
 
 recorder = None
 if (config['data.record']):
-    recorder = CsvRecorder(config['data.file'])
+    actual_time_formatted = actual_time.strftime("%y-%m-%d-%H-%M")
+    home = os.path.dirname(os.path.realpath(__file__))
+    name = epuck_controller.getName()
+    file_name = config['data.file'].format(home=home, datetime=actual_time_formatted, name=name, mode=mode)
+    print "recording to: ", file_name
+    recorder = CsvRecorder(file_name)
+    recorder.prepare()
     # clear file if we should not append it to the existing file 
     if (not (config['data.append'])):
         recorder.clear()
-
-if (mode == "wall"):
-    behavior = behaviors.WallFollowingBehavior()
-elif (mode == "target"):
-    behavior = behaviors.TargetFollowingBehavior()
-    behavior.set_target_coordinates_list([[-0.9, -0.9], [0.9, -0.9], [0.9, 0.9], [-0.9, 0.9]])
-else:
-    behavior = behaviors.RandomMovementBehavior()
-
-epuck_controller = EpuckFunctions()
-epuck_controller.basic_setup()
+    recorder.info(description)
+    #sys.exit(0)
 
 current_time = 0
+time_step_index = 0
 
-while not behavior.done():
-    epuck_controller.step(timestep)
-    current_time = current_time + timestep
+while (((time_step_count == 0) or (time_step_index < time_step_count)) and (not behavior.done())):
+    epuck_controller.step(time_step_size)
+    current_time = current_time + time_step_count
+    time_step_index = time_step_index + 1
 
     epuck_controller.update_proximities()
     
