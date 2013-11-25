@@ -138,4 +138,57 @@ def plot_coverage(title, trajectory, features):
     #raw_input()
     return
 
+def plot_cell_activation(title, trajectory, features):
+    featureCount = features.shape[1]
+    pointCount = features.shape[0]
+    plt.ion()
+    plt.figure()
+    plt.show()
+    plt.title(title)
+    #plt.ion()
+    #plt.show()
+    max = np.amax(features)
+    min = np.amin(features)
     
+    activations = []
+    locations = []
+    
+    for t in range(0, pointCount, 1):
+        
+        plt.clf()
+    
+        plt.plot(trajectory[:,0], trajectory[:,1], 'k')
+        
+        plt.plot(trajectory[t,0], trajectory[t,1], 'k.', markersize=20)
+               
+        activation = []
+        for j in range(featureCount):
+            f = features[:,j]
+            if(f[t] > 4.5):
+                activation.append(j)
+                
+        if(len(activation) > 0):
+        
+            new = True
+            for k in range(len(activations)):
+                if(activations[k] == activation 
+                   and euclidean_distance(trajectory[locations[k],:], trajectory[t,:]) < 50):
+                    new = False
+            
+            if(new):
+                activations.append(activation)
+                locations.append(t)                
+                
+        for l in range(len(locations)):
+            plt.plot(trajectory[locations[l],0], trajectory[locations[l],1], 'r.', markersize=20)
+            plt.text(trajectory[locations[l],0], trajectory[locations[l],1], activations[l])
+        
+        if t % 25 == 0:      
+            plt.draw()
+            
+    #plt.draw()
+        
+    return
+        
+def euclidean_distance(x, y):
+    return np.sqrt(np.sum((x-y)**2))
