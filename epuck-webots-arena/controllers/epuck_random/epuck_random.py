@@ -27,15 +27,13 @@ else:
 epuck_controller = EpuckFunctions()
 epuck_controller.basic_setup()
 
-epuck_controller.update_proximities()
-epuck_controller.step(timestep)
-
 current_time = 0
 
 while not behavior.done():
     epuck_controller.step(timestep)
-    epuck_controller.update_proximities()
     current_time = current_time + timestep
+
+    epuck_controller.update_proximities()
     
     # sensor data    
     sensorData = {
