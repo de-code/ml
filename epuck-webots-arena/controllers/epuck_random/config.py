@@ -1,4 +1,9 @@
 config = {
     'data.record': True,
-    'data.file': '/data_linux/public/downloads/_development_/machine-learning/datasets/sensor-data10.csv',
-    'data.append': True}
+    'data.file': '{home}/../../datasets/sensor-data-{datetime}-{name}-{mode}.csv',
+    'data.append': False,
+    'time.step.size': 100,
+    'time.step.count': 200000,
+    'randomness': 0.0,
+    'mode': 'path',
+    'targets': [[-0.9, -0.9], [0.9, -0.9], [0.9, 0.9], [-0.9, 0.9]]}

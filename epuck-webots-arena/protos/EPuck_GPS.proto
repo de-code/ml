@@ -1,3 +1,4 @@
+#VRML_SIM V7.3.0 utf8
 # EPFL educational and research mini mobile robot.
 # The e-puck is powered by a dsPIC processor and features a very large number of sensors in its basic configuration.
 # More info here: http://www.e-puck.org.
@@ -27,6 +28,8 @@ DifferentialWheels {
   translation IS translation
   rotation IS rotation
   children [
+    Compass {
+    }
     DEF EPUCK_GPS GPS {
     resolution IS gpsResolution
     }
