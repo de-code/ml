@@ -8,8 +8,8 @@ WorldInfo {
   title "E-puck"
 }
 Viewpoint {
-  orientation 0.999974 0.00533543 -0.00486691 5.1472
-  position -0.158006 4.98709 2.53491
+  orientation 0.999903 -0.00546387 -0.0128336 4.7372
+  position -0.116177 6.43378 0.317598
 }
 Background {
   skyColor [
@@ -81,6 +81,17 @@ DEF ground Solid {
       }
     ]
   }
+}
+DEF test-for-positioning-helper Solid {
+  translation -1.9 0 -0.9
+  scale 0.5 0.5 0.5
+  children [
+    Shape {
+      geometry Box {
+        size 0.1 0.1 0.1
+      }
+    }
+  ]
 }
 DEF short_rock_1 Solid {
   translation -0.347119 0.05 -0.060608
@@ -245,8 +256,11 @@ Solid {
   boundingObject USE WALL_SHAPE
 }
 DEF E_PUCK EPuck_GPS {
-  translation -0.894728 -0.000164 0.311602
-  rotation -8.6306e-07 1 -4.39734e-06 1.45379
+  hidden translation_3 -0.0260003 0.0200012 -1.48586e-07
+  hidden rotation_3 1 0.000304335 -4.00995e-05 2.13093
+  hidden translation_4 0.0260002 0.0200012 1.51621e-07
+  hidden rotation_4 1 0.000194354 -0.000178759 -2.88902
+  translation -0.9 -0.000163943 0.9
   controller "epuck_random"
   camera_windowPosition 0.134541 0.827051
   camera_fieldOfView 0.6

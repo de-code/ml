@@ -5,10 +5,10 @@ import random
 import math
 from config import config
 
-random_alpha = 0.2
+random_alpha = 0.0
 timestep = 100
 max_speed = 1.0
-mode = "random"
+mode = "target"
 
 recorder = None
 if (config['data.record']):
@@ -19,6 +19,9 @@ if (config['data.record']):
 
 if (mode == "wall"):
     behavior = behaviors.WallFollowingBehavior()
+elif (mode == "target"):
+    behavior = behaviors.TargetFollowingBehavior()
+    behavior.set_target_coordinates_list([[-0.9, -0.9], [0.9, -0.9], [0.9, 0.9], [-0.9, 0.9]])
 else:
     behavior = behaviors.RandomMovementBehavior()
 
@@ -30,7 +33,7 @@ epuck_controller.step(timestep)
 
 current_time = 0
 
-while True:
+while not behavior.done():
     # epuck_controller.stop_moving()
     epuck_controller.update_proximities()
     epuck_controller.step(timestep)
