@@ -262,6 +262,7 @@ DEF E_PUCK EPuck_GPS {
   hidden rotation_4 1 0.000194354 -0.000178759 -2.88902
   translation -0.9 -0.000163943 0.9
   controller "epuck_random"
+  name "e-puck-open-arena"
   camera_windowPosition 0.134541 0.827051
   camera_fieldOfView 0.6
   camera_pixelSize 4
