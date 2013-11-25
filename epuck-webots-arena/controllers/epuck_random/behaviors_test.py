@@ -129,6 +129,7 @@ class TestTargetFollowingBehavior(unittest.TestCase):
 
     def test_calculate_motor_speeds_should_return_zero_speeds_and_done_should_return_true_when_target_reached_exactly(self):
         behavior = behaviors.TargetFollowingBehavior()
+        behavior.repeat = False
         behavior.set_target_coordinates_list([[0.0, 0.0]])
         sensorData = {
             'coordinates': [0.0, 0.0],
