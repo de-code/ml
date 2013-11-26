@@ -34,7 +34,7 @@ epuck_controller.basic_setup(time_step_size)
 
 recorder = None
 if (config['data.record']):
-    actual_time_formatted = actual_time.strftime("%y-%m-%d-%H-%M")
+    actual_time_formatted = actual_time.strftime("%Y-%m-%d-%H-%M")
     home = os.path.dirname(os.path.realpath(__file__))
     name = epuck_controller.getName()
     file_name = config['data.file'].format(home=home, datetime=actual_time_formatted, name=name, mode=mode)
