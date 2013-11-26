@@ -24,10 +24,7 @@ import os
 import time
 from config import config
 
-def getPlaceCellActivation(currentFeatures, minSignal, maxSignal):
-    #maxSignal = np.amax(trainingFeatures)
-    #minSignal = np.amin(trainingFeatures)
-    
+def getPlaceCellActivation(currentFeatures, minSignal, maxSignal):   
     activation = []
     for i in range(len(currentFeatures)):
         f = currentFeatures[i]

@@ -53,7 +53,6 @@ def plot_feature_comparison(title, trajectory, features):
     min = np.amin(features)
     print "min=" + str(min) + ", max=" + str(max)
     for i in range(plotCount):
-        #ax = fig.add_subplot(plotCount/10,10,1+i)
         plt.subplot(plotCount/2, 2, 1+i)
         f = features[:,i]
         
@@ -69,10 +68,8 @@ def plot_feature_comparison(title, trajectory, features):
                 color = 'g'
                 
             if (color != ''):
-                #ax.plot(trajectory[k,0], trajectory[k,1], color+'.', markersize=20)
                 plt.plot(trajectory[k,0], trajectory[k,1], color+'.', markersize=20)
                 #plt.draw()
-        #ax.plot(trajectory[:,0], trajectory[:,1], 'k')
         plt.plot(trajectory[:,0], trajectory[:,1], 'k')
     plt.show()
     #raw_input()
