@@ -204,6 +204,8 @@ if __name__ == '__main__':
         plotter.plot_feature_comparison(title, coordm, testFeatures)
     elif (plotterConfig == 'coverage'):        
         plotter.plot_coverage(title, coordm, testFeatures)
+    elif (plotterConfig == 'reliability'):        
+        plotter.plot_reliability(title, coordm, testFeatures)
     elif (plotterConfig == 'cell_activation'):
         plotter.plot_cell_activation(title, coordm, testFeatures)
     elif (plotterConfig == 'replay'):
