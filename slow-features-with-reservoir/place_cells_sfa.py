@@ -19,19 +19,10 @@ import plotter
 import numpy as np
 import time
 import data_loader
+from place_cell_utilities import get_place_cell_activation
 from analyzer import Analyzer
 from config import config
 import place_cell_reliability
-
-def getPlaceCellActivation(currentFeatures, minSignal, maxSignal):   
-    activation = []
-    for i in range(len(currentFeatures)):
-        f = currentFeatures[i]
-        if (f > maxSignal * 0.3 or f < minSignal * 0.3):
-            activation.append(i)
-            print "activation " + str(i) + ", f=" + str(f) + ", minSignal=" + str(minSignal) + ", maxSignal=" + str(maxSignal)
-    return activation
-
 
 if __name__ == '__main__':
     data = data_loader.load_data(config)
@@ -140,7 +131,7 @@ if __name__ == '__main__':
 #             if ((icaOutput - testFeatures[timeIndex]).any()):
 #                 print "features not the same, timeIndex=" + str(timeIndex) +\
 #                     ", expected: " + str(testFeatures[timeIndex]) + ", actual: " + str(icaOutput)
-            activation = getPlaceCellActivation(icaOutput[0], minSignal, maxSignal)
+            activation = get_place_cell_activation(icaOutput[0], minSignal, maxSignal)
             for i in range(len(activationCounters)):
                 activationCounters[i] = max(0, activationCounters[i] - 1)
             for i in range(len(activation)):
