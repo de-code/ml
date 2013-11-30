@@ -21,6 +21,7 @@ import time
 import data_loader
 from analyzer import Analyzer
 from config import config
+import place_cell_reliability
 
 def getPlaceCellActivation(currentFeatures, minSignal, maxSignal):   
     activation = []
@@ -85,6 +86,9 @@ if __name__ == '__main__':
     #plotter.plot_features_graphs("dummy", coordm, testFeaturesCombined, 8, sm, 0)
     
     title = analyzer.description + ", data: " + str(len(sm)) + ", source: " + sourceDescription
+
+    activation_locations = place_cell_reliability.get_activation_mean_locations(coordm, trainingFeatures)
+    place_cell_reliability.average_cost(coordm, testFeatures, activation_locations)
 
 #     plt.ion()
 #     print "graph"

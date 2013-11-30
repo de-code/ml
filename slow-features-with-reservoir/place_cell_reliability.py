@@ -3,6 +3,7 @@ import numpy as np
 from numpy import linalg as la
 
 ACTIVATION_THRESHOLD = 4.5
+NO_PREDICTION_PENALTY_COST = 2
 
 def preprocess_activations(sigmoid_gradient, things):
     #return 1 /(1+np.exp(-sigmoid_gradient*things))
@@ -27,10 +28,17 @@ def average_cost(coords, place_cell_activations, activation_locations):
     preprocessed_activations = preprocess_activations(0.1, place_cell_activations)
     predicted_locations = np.zeros((m,2))   
     
+    prediction_count = 0
     for t in range(m):
-        predicted_locations[t,:] = np.mean(activation_locations[preprocessed_activations[t,:] > ACTIVATION_THRESHOLD,:], axis=0)
-        cost = cost + la.norm(coords[t,:] - predicted_locations[t,:])  
-    
+        locations = activation_locations[preprocessed_activations[t,:] > ACTIVATION_THRESHOLD,:]
+        if len(locations) > 0:
+            predicted_locations[t,:] = np.mean(locations, axis=0)
+            cost = cost + la.norm(coords[t,:] - predicted_locations[t,:])
+            prediction_count = prediction_count + 1
+        else:
+            cost = cost + NO_PREDICTION_PENALTY_COST
+          
+    print('Prediction count: ', prediction_count, ' of ', m)
     return cost/m
 
 
