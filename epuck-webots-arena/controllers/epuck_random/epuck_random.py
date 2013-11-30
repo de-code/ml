@@ -3,7 +3,7 @@ from recorder import CsvRecorder
 import behaviors
 import random
 import datetime
-import sys
+#import sys
 import os
 from config import config
 
@@ -14,14 +14,17 @@ max_speed = 1.0
 mode = config['mode']
 
 actual_time = datetime.datetime.now()
+ignore_first_iteration = False
 
 description = "time.step.size=" + str(time_step_size) + "\ntime.step.count=" + str(time_step_count) + "\nrandomness=" + str(random_alpha) + "\nmode=" + mode 
 if (mode == "wall"):
     behavior = behaviors.WallFollowingBehavior()
 elif (mode == "path"):
     behavior = behaviors.TargetFollowingBehavior()
-    behavior.set_target_coordinates_list(config['targets'])
+    behavior.set_target_coordinates_list(config['targets'], config['targets.reverse'])
     description = description + "\ntargets=" + str(config['targets'])
+    description = description + "\ntargets.reverse=" + str(config['targets.reverse'])
+    ignore_first_iteration = config['targets.reverse']
 elif (mode == "random"):
     behavior = behaviors.RandomMovementBehavior()
 else:
@@ -77,4 +80,5 @@ while (((time_step_count == 0) or (time_step_index < time_step_count)) and (not 
     epuck_controller.move_wheels(speeds)
 
     if (recorder != None):
-        recorder.record(sensorData, speeds)    
+        if ((not ignore_first_iteration) or (not behavior.first_iteration())):
+            recorder.record(sensorData, speeds)    

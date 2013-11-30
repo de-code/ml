@@ -8,6 +8,9 @@ class Behavior:
     def done(self):
         return False
 
+    def first_iteration(self):
+        return False
+
 class RandomMovementBehavior (Behavior):
     def __init__(self):
         self.sensor_factor = 900
@@ -44,15 +47,42 @@ class TargetFollowingBehavior (Behavior):
         self.angel_tolerance = 0.5
         self.turn_speed = 0.5
         self.repeat = True
+        self.reverse = False
         self.target_coordinates_index = 0
         self.target_coordinates_list = []
+        self.iteration_count = 0
         
-    def set_target_coordinates_list(self, target_coordinates_list):
-        self.target_coordinates_index = 0
+    def set_target_coordinates_list(self, target_coordinates_list, reverse=False):
         self.target_coordinates_list = target_coordinates_list
+        self.reverse = reverse
+        self.target_coordinates_index = self.first_target_index()
+        self.iteration_count = 0
+        print "first target: " + self.current_target_description()
         
     def done(self):
-        return self.target_coordinates_index >= len(self.target_coordinates_list)
+        return ((self.target_coordinates_index >= len(self.target_coordinates_list)) or (self.target_coordinates_index < 0))
+    
+    def first_iteration(self):
+        return (self.iteration_count == 0) or ((self.reverse) and (self.iteration_count == 1) and (self.target_coordinates_index == self.first_target_index()))
+
+    def first_target_index(self):
+        return len(self.target_coordinates_list) - 1 if self.reverse else 0
+
+    def next_target_index(self):
+        return self.target_coordinates_index - 1 if self.reverse else self.target_coordinates_index + 1
+
+    def next_target(self):
+        self.target_coordinates_index = self.next_target_index()
+        if ((self.repeat) and (self.done())):
+            self.target_coordinates_index = self.first_target_index()
+            self.iteration_count = self.iteration_count + 1
+
+    def current_target_description(self):
+        if (self.done()):
+            return "none (done)"
+        else:
+            target_coordinates = self.target_coordinates_list[self.target_coordinates_index]
+            return str(self.target_coordinates_index) + " (" + str(target_coordinates) + ")"
 
     def distance(self, v):
         return math.sqrt(v[0] * v[0] + v[1] * v[1]);
@@ -73,7 +103,7 @@ class TargetFollowingBehavior (Behavior):
         if (rad < -math.pi):
             rad = rad + (2 * math.pi)
         abs_angle = rad / math.pi * 180.0
-        #print "compass heading: ", compass_heading, ", target: ", abs_angle, ", relative_target_coordinates: ", relative_target_coordinates
+        #print "compass heading: ", compass_heading, ", target: ", abs_angle, ", relative_target_coordinates: ", relative_target_coordinates, ", target_coordinates:", target_coordinates
         angle = abs_angle - compass_heading
         if (angle < -180.0):
             angle = angle + 360.0
@@ -89,10 +119,9 @@ class TargetFollowingBehavior (Behavior):
             target_coordinates = self.target_coordinates_list[self.target_coordinates_index]
             angle, distance = self.angle_and_distance_to_target(target_coordinates, sensorData['coordinates'], sensorData['compass_heading'])
             if (distance < self.distance_tolerance):
-                print "target reached: ", self.target_coordinates_index, ", target_coordinates: ", target_coordinates
-                self.target_coordinates_index = self.target_coordinates_index + 1
-                if ((self.repeat) and (self.done())):
-                    self.target_coordinates_index = 0
+                print "target reached: ", self.current_target_description()
+                self.next_target()
+                print "next target: " + self.current_target_description()
                 # calculate the speeds to reach the next target
                 speeds = self.calculate_motor_speeds(sensorData)
             else:
