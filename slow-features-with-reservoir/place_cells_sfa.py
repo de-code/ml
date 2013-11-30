@@ -22,10 +22,7 @@ import data_loader
 from analyzer import Analyzer
 from config import config
 
-def getPlaceCellActivation(currentFeatures, minSignal, maxSignal):
-    #maxSignal = np.amax(trainingFeatures)
-    #minSignal = np.amin(trainingFeatures)
-    
+def getPlaceCellActivation(currentFeatures, minSignal, maxSignal):   
     activation = []
     for i in range(len(currentFeatures)):
         f = currentFeatures[i]
@@ -108,8 +105,12 @@ if __name__ == '__main__':
 
         #for the first 3 features
         plotter.plot_feature_comparison(title, coordm, testFeatures)
-    elif (plotterConfig == 'coverage'):
+    elif (plotterConfig == 'coverage'):        
         plotter.plot_coverage(title, coordm, testFeatures)
+    elif (plotterConfig == 'reliability'):        
+        plotter.plot_reliability(title, coordm, testFeatures)
+    elif (plotterConfig == 'cell_activation'):
+        plotter.plot_cell_activation(title, coordm, testFeatures)
     elif (plotterConfig == 'replay'):
         plt.ion()
         print "graph"

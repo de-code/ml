@@ -53,7 +53,6 @@ def plot_feature_comparison(title, trajectory, features):
     min = np.amin(features)
     print "min=" + str(min) + ", max=" + str(max)
     for i in range(plotCount):
-        #ax = fig.add_subplot(plotCount/10,10,1+i)
         plt.subplot(plotCount/2, 2, 1+i)
         f = features[:,i]
         
@@ -69,10 +68,8 @@ def plot_feature_comparison(title, trajectory, features):
                 color = 'g'
                 
             if (color != ''):
-                #ax.plot(trajectory[k,0], trajectory[k,1], color+'.', markersize=20)
                 plt.plot(trajectory[k,0], trajectory[k,1], color+'.', markersize=20)
                 #plt.draw()
-        #ax.plot(trajectory[:,0], trajectory[:,1], 'k')
         plt.plot(trajectory[:,0], trajectory[:,1], 'k')
     plt.show()
     #raw_input()
@@ -138,4 +135,134 @@ def plot_coverage(title, trajectory, features):
     #raw_input()
     return
 
+def plot_cell_activation(title, trajectory, features):
+    featureCount = features.shape[1]
+    pointCount = features.shape[0]
+    plt.ion()
+    plt.figure()
+    plt.show()
+    plt.title(title)
+    max = np.amax(features)
+    min = np.amin(features)
     
+    activations = []
+    locations = []
+    
+    for t in range(0, pointCount, 1):
+        
+        plt.clf()
+    
+        plt.plot(trajectory[:,0], trajectory[:,1], 'k')
+        
+        plt.plot(trajectory[t,0], trajectory[t,1], 'k.', markersize=20)
+               
+        activation = []
+        for j in range(featureCount):
+            f = features[:,j]
+            if(f[t] > 4.5):
+                activation.append(j)
+                
+        if(len(activation) > 0):
+        
+            new = True
+            for k in range(len(activations)):
+                if(activations[k] == activation 
+                   and euclidean_distance(trajectory[locations[k],:], trajectory[t,:]) < 50):
+                    new = False
+            
+            if(new):
+                activations.append(activation)
+                locations.append(t)                
+                
+        for l in range(len(locations)):
+            plt.plot(trajectory[locations[l],0], trajectory[locations[l],1], 'r.', markersize=20)
+            plt.text(trajectory[locations[l],0], trajectory[locations[l],1], activations[l])
+        
+        if t % 25 == 0:      
+            plt.draw()
+            
+    #plt.draw()
+        
+    return
+        
+def euclidean_distance(x, y):
+    return np.sqrt(np.sum((x-y)**2))
+
+def plot_reliability(title, trajectory, features):
+    featureCount = features.shape[1]
+    pointCount = features.shape[0]
+    #plt.ion()
+    plt.figure()
+    #plt.show()
+    plt.title(title)
+    locations = []
+    activations = []
+    hits = []
+    misses = []
+    inRange = []
+    counted = []
+    for i in range(featureCount):
+        f = features[:,i]
+              
+        maxIca = 0
+        for k in range(pointCount):
+            if(f[k] > 4.5):
+                if f[k] > maxIca:
+                    maxIca = f[k]
+                    locations.append(k)
+                    activations.append(i)
+                    hits.append(0)
+                    misses.append(0)
+                    inRange.append(False)
+                    counted.append(False)
+    
+    plt.setp( plt.gca().xaxis.get_ticklabels(), visible=False)
+    plt.setp( plt.gca().yaxis.get_ticklabels(), visible=False)
+    
+    for t in range(pointCount):
+        
+        if (t%10000 == 0):
+            print "t="+str(t)
+        
+        #plt.clf()
+    
+        #plt.plot(trajectory[:,0], trajectory[:,1], 'k')
+        
+        for l in range(len(locations)):
+            if (euclidean_distance(trajectory[locations[l],:], trajectory[t,:]) < 50):
+                if(inRange[l] == False):
+                    inRange[l] = True
+                
+                f = features[:,activations[l]]
+                if(f[locations[l]] > 4.5):
+                    if(counted[l] == False):
+                        counted[l] = True
+                        hits[l] = hits[l] + 1
+                        
+                #plt.plot(trajectory[locations[l],0], trajectory[locations[l],1], 'g.', markersize=20)
+            else:
+                if(inRange[l] == True):
+                    inRange[l] = False
+                    if(counted[l] == False):
+                        misses[l] = misses[l] + 1
+                    else:
+                        counted[l] = False
+                        
+                #plt.plot(trajectory[locations[l],0], trajectory[locations[l],1], 'r.', markersize=20)
+                
+            #plt.text(trajectory[locations[l],0], trajectory[locations[l],1], str(hits[l])+"/"+str(misses[l]))
+            
+        #plt.plot(trajectory[t,0], trajectory[t,1], 'k.', markersize=20)
+        
+        #if t % 100 == 0:      
+        #    plt.draw()
+    
+    plt.plot(trajectory[:,0], trajectory[:,1], 'k')
+    for l in range(len(locations)):
+        plt.plot(trajectory[locations[l],0], trajectory[locations[l],1], 'r.', markersize=20)
+        plt.text(trajectory[locations[l],0], trajectory[locations[l],1], str(hits[l])+"/"+str(misses[l]))
+        
+    
+    plt.show()
+    raw_input()
+    return
