@@ -52,8 +52,9 @@ if (config['data.record']):
 
 current_time = 0
 time_step_index = 0
+first_time_step_index = -1
 
-while (((time_step_count == 0) or (time_step_index < time_step_count)) and (not behavior.done())):
+while (((time_step_count == 0) or (first_time_step_index < 0) or (time_step_index - first_time_step_index < time_step_count)) and (not behavior.done())):
     epuck_controller.step(time_step_size)
     current_time = current_time + time_step_count
     time_step_index = time_step_index + 1
@@ -81,4 +82,9 @@ while (((time_step_count == 0) or (time_step_index < time_step_count)) and (not 
 
     if (recorder != None):
         if ((not ignore_first_iteration) or (not behavior.first_iteration())):
+            if (first_time_step_index < 0):
+                first_time_step_index = (time_step_index - 1)
             recorder.record(sensorData, speeds)    
+
+# reset speeds
+epuck_controller.move_wheels([0, 0])
