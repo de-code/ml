@@ -14,13 +14,12 @@ Location of the robot is the topmost plot.
 '''
 from scipy.io.matlab.mio import loadmat
 from scipy.signal.signaltools import resample
-import Oger
 import matplotlib.pyplot as plt
-import mdp.nodes
-import numpy as np
 import plotter
+import numpy as np
 import time
 import data_loader
+from analyzer import Analyzer
 from config import config
 
 def getPlaceCellActivation(currentFeatures, minSignal, maxSignal):
@@ -45,47 +44,13 @@ if __name__ == '__main__':
     # these have time along the x axis
     #sensorData = np.array(sm)
     #sensorData = np.transpose(sm[1:1000, :]);
-        
-    resDims = config['analyse.reservoire.dim'] #dimensions in the reserv
-    sfaNum = config['analyse.sfa.num'] #number of slow features to extract
-    icaNum = config['analyse.ica.num'] # number of independent components to extract
-    leakRate = config['analyse.leak.rate'] # leak rate of the reservoir
-    specRadius = config['analyse.spectral.radius'] # spectral radius
-
+    
     inputDims = len(sm[0])
     
     print "inputDims=", inputDims, ", rows=", len(sm)
     
-    # define the reservoir and pass the spectrogram through it
-    resNode = Oger.nodes.LeakyReservoirNode(input_dim=inputDims,
-                  output_dim=resDims, spectral_radius=specRadius, leak_rate=leakRate, reset_states=True)
-
-    # Creation of the input weight matrix according to paper
-    # -0.2,0.2 and 0 with probabilities of 0.15,0.15 and 0.7 respectively 
-    w_in = np.zeros((resDims, inputDims))
-    for i in range(resDims):
-        for j in range(inputDims):
-            ran = np.random.rand()
-            if ran < 0.15:
-                w_in[i, j] = -0.2
-            elif ran < 0.3:
-                w_in[i, j] = 0.2
-            else:
-                w_in[i, j] = 0 
-                
-    # set the input weight matrix for reservoir                
-    resNode.w_in = w_in
-    resNode.initialize()
-
-    # define the sfa node
-    sfaNode = mdp.nodes.SFANode(output_dim=sfaNum)
-    
-    # define the ica node
-    icaNode = mdp.nodes.FastICANode(input_dim=sfaNum)
-    # icaNode.set_output_dim(icaNum)
-
-    #define the flow
-    flow = mdp.Flow(resNode + sfaNode + icaNode)
+    analyzer = Analyzer(config, inputDims)
+        
     #train the flow
 
     plotterConfig = config['plotter']
@@ -106,24 +71,23 @@ if __name__ == '__main__':
         testDataOffset = 0
         trainingData = sm
         testData = sm
-        
-    flow.train(np.transpose(trainingData).T)
-    # 
-    trainingFeatures = flow.execute(np.transpose(trainingData).T)
-    testFeatures = flow.execute(np.transpose(testData).T)
+
+    analyzer.train(trainingData)
+     
+    trainingFeatures = analyzer.execute(trainingData)
+    testFeatures = analyzer.execute(testData)
     #testFeatures = trainingFeatures
-    resNode.reset_states = True
+    analyzer.reset_states(True)
     testFeatures2 = []
     for timeIndex in range(0, len(testData), 1):
-        testFeatures2.append(flow.execute(np.transpose([testData[timeIndex]]).T)[0])
-        resNode.reset_states = False
-    #testFeatures2 = flow.execute(np.transpose(testData).T)
+        testFeatures2.append(analyzer.execute([testData[timeIndex]])[0])
+        analyzer.reset_states(False)
+    #testFeatures2 = analyzer.execute(testData)
     testFeaturesCombined = np.append(testFeatures, testFeatures2, 1)
     print "testFeaturesCombined: " + str(len(testFeaturesCombined.T)) + " x " + str(len(testFeaturesCombined.T[0]))
     #plotter.plot_features_graphs("dummy", coordm, testFeaturesCombined, 8, sm, 0)
     
-    title = "Res: " + str(resDims) + ", SFA: " + str(sfaNum) + ", ICA: " + str(icaNum) + ", leak: " + str(leakRate) +\
-        ", specR: " + str(specRadius) + ", data: " + str(len(sm)) + ", source: " + sourceDescription
+    title = analyzer.description + ", data: " + str(len(sm)) + ", source: " + sourceDescription
 
 #     plt.ion()
 #     print "graph"
@@ -162,11 +126,11 @@ if __name__ == '__main__':
         activationCounters = []
         updatePlotInterval = 10
         print "feature count=" + str(len(testFeatures))
-        for i in range(icaNum):
+        for i in range(analyzer.output_count):
             activationCounters.append(0)
         for timeIndex in range(0, len(testData), 1):
             print "timeIndex=" + str(timeIndex)
-            icaOutput = flow.execute(np.transpose([testData[timeIndex]]).T)
+            icaOutput = analyzer.execute([testData[timeIndex]])
             #icaOutput = [testFeatures[timeIndex]]
 #             if ((icaOutput - testFeatures[timeIndex]).any()):
 #                 print "features not the same, timeIndex=" + str(timeIndex) +\
