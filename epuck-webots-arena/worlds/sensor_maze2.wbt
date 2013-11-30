@@ -8,8 +8,13 @@ WorldInfo {
   title "E-puck"
 }
 Viewpoint {
-  orientation -0.47874 0.679219 0.5563 2.07012
-  position 1.03525 4.83243 -0.061678
+  orientation -0.999868 0.00730721 0.0145038 1.52601
+  position -0.178665 3.49775 0.187002
+}
+Background {
+  skyColor [
+    0.4 0.7 1
+  ]
 }
 PointLight {
   ambientIntensity 0.5
@@ -21,11 +26,6 @@ PointLight {
   ambientIntensity 0.5
   intensity 0.6
   location -0.43 0.6 0.5
-}
-Background {
-  skyColor [
-    0.4 0.7 1
-  ]
 }
 DEF ground Solid {
   translation 0 -0.0001 0
@@ -335,19 +335,13 @@ Solid {
   boundingObject USE WALL_SHAPE
 }
 DEF E_PUCK EPuck_GPS {
-  hidden linearVelocity_0 -0.0199881 -3.01566e-07 5.17089e-07
-  hidden angularVelocity_0 7.98988e-06 0.0221086 0.000107884
-  hidden translation_2 -0.0259988 0.0200031 -6.38683e-07
-  hidden rotation_2 1 -8.85894e-05 0.000112505 -2.00969
-  hidden linearVelocity_2 -0.0195028 -1.95076e-06 0.000308156
-  hidden angularVelocity_2 -0.623503 0.0212127 0.97297
-  hidden translation_3 0.0260034 0.0200007 -9.61923e-07
-  hidden rotation_3 1 -6.21709e-05 -7.24735e-05 -2.72695
-  hidden linearVelocity_3 -0.0204739 1.36155e-06 -0.00030766
-  hidden angularVelocity_3 -0.657163 0.0212933 1.02599
-  translation 0.577962 -0.000145339 -0.838194
-  rotation 0.00384157 0.999992 -0.00106995 1.00088
+  hidden translation_3 -0.0260003 0.0200012 -1.48586e-07
+  hidden rotation_3 1 0.000304335 -4.00995e-05 2.13093
+  hidden translation_4 0.0260002 0.0200012 1.51621e-07
+  hidden rotation_4 1 0.000194354 -0.000178759 -2.88902
+  translation 0.74 -0.000163943 0.5
   controller "epuck_random"
+  name "e-puck-l-shape"
   camera_windowPosition 0.134541 0.827051
   camera_fieldOfView 0.6
   camera_pixelSize 4
