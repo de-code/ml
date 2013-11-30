@@ -52,4 +52,4 @@ class Analyzer:
         
     def execute(self, data):
         return self.flow.execute(np.transpose(data).T)
-        
+
