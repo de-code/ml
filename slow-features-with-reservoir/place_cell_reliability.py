@@ -45,6 +45,10 @@ def average_cost(coords, place_cell_activations, activation_locations):
     print('Prediction count: ', prediction_count, ' of ', m)
     return cost/m
 
+def calculate_fitness(coords, place_cell_activations, activation_locations):
+    cost = average_cost(coords, place_cell_activations, activation_locations)
+    return 1/cost if cost > 0 else 0
+
 def plot_activations(title, trajectory, features, single_plot):
     ''' Example plot:
      plot_activations('Place cells: ', self.coordinate_matrix, test_features, False) 
