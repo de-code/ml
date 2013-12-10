@@ -9,6 +9,12 @@ class Analyzer:
         icaNum = config['analyse.ica.num'] # number of independent components to extract
         leakRate = config['analyse.leak.rate'] # leak rate of the reservoir
         specRadius = config['analyse.spectral.radius'] # spectral radius
+        
+        # make sure that reservoir size is matching
+        if resDims < sfaNum:
+            resDims = sfaNum
+            print "Adjusting reservoir size to feature count!!!"
+        
         resNode = Oger.nodes.LeakyReservoirNode(input_dim=inputDims,
                       output_dim=resDims, spectral_radius=specRadius, leak_rate=leakRate, reset_states=True)
         # Creation of the input weight matrix according to paper
