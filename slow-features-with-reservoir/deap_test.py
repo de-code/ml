@@ -50,6 +50,7 @@ class AnalyzerHelper:
         self.training_data = trainingData
         self.test_data = testData
         self.input_dimensions = len(sm[0])
+        print "training data details:",len(self.training_data)
 
     def calculate_cost(self, parameters):
         if (self.dummy):
@@ -82,7 +83,7 @@ class AnalyzerHelper:
 
 parameters_descriptors = [
     IntParameterDescriptor('analyse.reservoire.dim', 300, 400, 5),
-    IntParameterDescriptor('analyse.sfa.num', 1, 400, 5),
+    IntParameterDescriptor('analyse.sfa.num', 10, 100, 5),
 #            IntParameterDescriptor('analyse.ica.num', 1, 400, 5),
     FloatParameterDescriptor('analyse.leak.rate', 0, 1, 0.1),
     FloatParameterDescriptor('analyse.spectral.radius', 0, 1, 0.1)]
@@ -118,7 +119,7 @@ toolbox.register("attr", random_parameters)
 toolbox.register("individual", tools.initRepeat, creator.Individual, 
     toolbox.attr, 1)
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
-toolbox.register("map", futures.map)
+#toolbox.register("map", futures.map)
 
 def evalOneMax1(individual):
 #    a = [math.sqrt(random.random()) for k in range(10000)]
@@ -138,8 +139,8 @@ def main():
     start = time.time()
     random.seed(64)
     
-    pop = toolbox.population(n=5)
-    CXPB, MUTPB, NGEN = 0.5, 0.5, 50
+    pop = toolbox.population(n=25)
+    CXPB, MUTPB, NGEN = 0.5, 1.0, 100
     
     print("Start of evolution")
     
