@@ -14,7 +14,7 @@
 #    License along with DEAP. If not, see <http://www.gnu.org/licenses/>.
 
 import random
-
+import traceback, os.path
 from deap import base
 from deap import creator
 from deap import tools
@@ -66,16 +66,23 @@ class AnalyzerHelper:
 
     def calculate_cost_using_analyzer(self, parameters, parameters_descriptors):
         config = {}
+        id = random.randint(0,100000)
+        print "trial id:",id
         for i in range(len(parameters)):
             config[parameters_descriptors[i].name] = parameters[i]
         config['analyse.ica.num'] = config['analyse.sfa.num'] 
-        print "calculating cost for: ", config
+        print "[{0}] calculating cost for: {1}".format(id,config)
         start = time.time()
+        print "[{0}] creating analyser".format(id)
         analyzer = Analyzer(config, self.input_dimensions)
+        print "[{0}] training analyser".format(id)
         analyzer.train(self.training_data)
         #training_features = analyzer.execute(self.training_data)
+        print "[{0}] testing features".format(id)
         test_features = analyzer.execute(self.test_data)
+        print "[{0}] activating locations".format(id)
         activation_locations = get_activation_mean_locations(self.coordinate_matrix, test_features)
+        print "[{0}] getting average_cost".format(id)
         cost = average_cost(self.coordinate_matrix, test_features, activation_locations)
         end = time.time()
         print "calculating cost done, took ", (end - start), ", config: ", config
@@ -119,14 +126,22 @@ toolbox.register("attr", random_parameters)
 toolbox.register("individual", tools.initRepeat, creator.Individual, 
     toolbox.attr, 1)
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
-#toolbox.register("map", futures.map)
+toolbox.register("map", futures.map)
 
 def evalOneMax1(individual):
 #    a = [math.sqrt(random.random()) for k in range(10000)]
     return sum(individual[0]),
 
 def evalOneMax(individual):
-    return analyzerHelper.calculate_cost_using_analyzer(individual[0], parameters_descriptors),
+    try:
+        cost = analyzerHelper.calculate_cost_using_analyzer(individual[0], parameters_descriptors)
+    except Exception as e:
+        print "Exception in evaluation"
+        top = traceback.extract_stack()[-1]
+        print ', '.join([type(e).__name__, os.path.basename(top[0]), str(top[1])])
+        cost = 0.0
+    print "cost:",cost
+    return cost,
 
 # Operator registering
 toolbox.register("evaluate", evalOneMax)
@@ -139,7 +154,7 @@ def main():
     start = time.time()
     random.seed(64)
     
-    pop = toolbox.population(n=25)
+    pop = toolbox.population(n=16)
     CXPB, MUTPB, NGEN = 0.5, 1.0, 100
     
     print("Start of evolution")
