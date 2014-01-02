@@ -139,7 +139,7 @@ def evalOneMax(individual):
         print "Exception in evaluation"
         top = traceback.extract_stack()[-1]
         print ', '.join([type(e).__name__, os.path.basename(top[0]), str(top[1])])
-        cost = 0.0
+        cost = 100.0
     print "cost:",cost
     return cost,
 
