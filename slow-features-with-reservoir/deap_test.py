@@ -24,6 +24,7 @@ from parameters_evolver import *
 from analyzer import Analyzer
 from config import config
 import time,math
+from place_cell_reliability import calculate_fitness
 
 class AnalyzerHelper:
     def __init__(self, config):
@@ -90,8 +91,7 @@ class AnalyzerHelper:
 
 parameters_descriptors = [
     IntParameterDescriptor('analyse.reservoire.dim', 300, 400, 5),
-    IntParameterDescriptor('analyse.sfa.num', 10, 100, 5),
-#            IntParameterDescriptor('analyse.ica.num', 1, 400, 5),
+    IntParameterDescriptor('analyse.sfa.num', 10, 150, 5),
     FloatParameterDescriptor('analyse.leak.rate', 0, 1, 0.1),
     FloatParameterDescriptor('analyse.spectral.radius', 0, 1, 0.1)]
 
@@ -116,7 +116,7 @@ def mutate_parameters1(parameters):
 def mutate_parameters(parameters):
     return mutate_parameters1(parameters[0])
 
-creator.create("FitnessMax", base.Fitness, weights=(1.0,))
+creator.create("FitnessMax", base.Fitness, weights=(-1.0,))
 creator.create("Individual", list, fitness=creator.FitnessMax)
 
 toolbox = base.Toolbox()
@@ -126,7 +126,7 @@ toolbox.register("attr", random_parameters)
 toolbox.register("individual", tools.initRepeat, creator.Individual, 
     toolbox.attr, 1)
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
-toolbox.register("map", futures.map)
+# toolbox.register("map", futures.map)
 
 def evalOneMax1(individual):
 #    a = [math.sqrt(random.random()) for k in range(10000)]
@@ -151,11 +151,14 @@ toolbox.register("mutate", mutate_parameters)
 toolbox.register("select", tools.selTournament, tournsize=2)
 
 def main():
+    all_fits = open("all_fits.dat",'w')
+    all_fits.close()
+    all_fits = open("all_fits.dat",'a')
     start = time.time()
     random.seed(64)
     
-    pop = toolbox.population(n=16)
-    CXPB, MUTPB, NGEN = 0.5, 1.0, 100
+    pop = toolbox.population(n=50)
+    CXPB, MUTPB, NGEN = 0.5, 0.5, 3000
     
     print("Start of evolution")
     
@@ -183,6 +186,7 @@ def main():
 #                 del child2.fitness.values
 
         for mutant in offspring:
+            del mutant.fitness.values
             if random.random() < MUTPB:
                 toolbox.mutate(mutant)
                 del mutant.fitness.values
@@ -200,7 +204,9 @@ def main():
         
         # Gather all the fitnesses in one list and print the stats
         fits = [ind.fitness.values[0] for ind in pop]
-        
+        all_fits.write(",".join([str(f) for f in fits]))
+        all_fits.close()
+        all_fits = open("all_fits.dat",'a')
         length = len(pop)
         mean = sum(fits) / length
         sum2 = sum(x*x for x in fits)
@@ -210,6 +216,9 @@ def main():
         print("  Max %s" % max(fits))
         print("  Avg %s" % mean)
         print("  Std %s" % std)
+        best_ind = tools.selBest(pop, 1)[0]
+        
+        print("Best individual is %s, %s" % (best_ind, best_ind.fitness.values))
     
     print("-- End of (successful) evolution --")
     
