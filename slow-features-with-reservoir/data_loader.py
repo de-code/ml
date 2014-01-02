@@ -14,6 +14,8 @@ Location of the robot is the topmost plot.
 '''
 import data_utilities
 import os
+from scipy.io import loadmat
+import numpy as np
 
 def load_data(config):
     # take matlab file in as a dictionary
@@ -41,7 +43,7 @@ def load_data(config):
             print 'Data file not found:', dataFile 
             exit()
         # these have time along the x axis
-        sd = np.array(dictFile.get('sensors'))
+        sd = np.array(dictFile.get('sensors_resampled'))
         sm = np.transpose(sd) 
         dataInfo = np.array(dictFile.get('data_info'))
         # 5th index contains the location number at each timestep
